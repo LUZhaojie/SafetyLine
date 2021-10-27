@@ -1,91 +1,69 @@
 package com.backend.db.controller;
 
 import com.backend.db.bean.User;
-import com.backend.db.service.UserService;
+import com.backend.db.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
+import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 import java.util.List;
-import java.util.Map;
 
-@Controller
+@Validated
+@RestController
 public class UserController {
     @Autowired
-    UserService userService;
+    UserServiceImpl userService;
 
     @ResponseBody
     @GetMapping("/user")
-    public User Userbyid(@RequestParam("id") Long id){
-        return userService.getById(id);
+    public User Userbyid(@RequestParam("id") Long id) {
+        return userService.Userbyid(id);
     }
 
 
     @ResponseBody
     @GetMapping("/user/name")
-    public List<User> UserbyName(@RequestParam("username") String username){
-        Map<String, Object> map = new HashMap<>();
-        map.put("username", username);
-        List<User> list = userService.getBaseMapper().selectByMap(map);
-        return list;
+    public List<User> UserbyName(@NotEmpty(message = "The username cannot be empty") @RequestParam("username") String username){
+        return userService.UserbyName(username);
     }
 
 
     @ResponseBody
     @DeleteMapping("/user/delete")
-    public User deleteUser(@RequestParam("id") Long id){
-        User u = userService.getById(id);
-        userService.removeById(id);
-        return u;
+    public User deleteUser( @RequestParam("id") Long id){
+        return userService.deleteUser(id);
     }
 
     @ResponseBody
     @PostMapping("/user/saveUser")
-    public Boolean saveUser(User user){
-        Boolean b = userService.save(user);
-        if (b) {
-            return Boolean.TRUE;
-        }
-        return Boolean.FALSE;
+    public Boolean saveUser(@Valid @RequestBody User user){
+        return userService.saveUser(user);
     }
 
     @ResponseBody
     @GetMapping("/user/all")
     public List<User> getAll(){
-        return userService.list();
+        return userService.getAll();
     }
 
     @ResponseBody
     @GetMapping("/user/login")
-    public Boolean login(@RequestParam("username") String name,@RequestParam("password") String pwd){
-        Map<String, Object> map = new HashMap<>();
-        map.put("username", name);
-        map.put("password", pwd);
-        List<User> list = userService.getBaseMapper().selectByMap(map);
-        if(!list.isEmpty()){
-            return Boolean.TRUE;
-        }
-        return Boolean.FALSE;
+    public Boolean login(@NotEmpty(message = "The username cannot be empty") @RequestParam("username") String name, @NotEmpty(message = "The password cannot be empty") @RequestParam("password") String pwd){
+        return userService.login(name,pwd);
     }
 
     @ResponseBody
     @GetMapping("/user/role")
-    public Integer getRole(@RequestParam("username") String name){
-        Map<String, Object> map = new HashMap<>();
-        map.put("username", name);
-        List<User> list = userService.getBaseMapper().selectByMap(map);
-        return list.get(0).getRole();
+    public Integer getRole(@NotEmpty(message = "The username cannot be empty") @RequestParam("username") String name) throws Exception{
+        return  userService.getRole(name);
     }
 
     @ResponseBody
     @PostMapping("/user/changepwd")
-    public Integer changePwd(@RequestParam("username") String name,@RequestParam("password") String pwd){
-        Map<String, Object> map = new HashMap<>();
-        map.put("username", name);
-        User u = userService.getBaseMapper().selectByMap(map).get(0);
-        u.setPassword(pwd);
-        return userService.getBaseMapper().updateById(u);
+    public Integer changePwd(@NotEmpty(message = "The username cannot be empty") @RequestParam("username") String name,@NotEmpty(message = "The password cannot be empty")  @RequestParam("password") String pwd) throws Exception{
+        return userService.changePwd(name,pwd);
     }
 
 }
