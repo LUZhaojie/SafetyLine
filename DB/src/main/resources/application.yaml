@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:mysql://sql11.freemysqlhosting.net:3306/sql11449624
-    username: sql11449624
-    password: IN8lgXUt9R
+    url: jdbc:mysql://db4free.net:3306/safetylinetest
+    username: safetyline
+    password: 19980223x
     driver-class-name: com.mysql.cj.jdbc.Driver
 
 mybatis:
