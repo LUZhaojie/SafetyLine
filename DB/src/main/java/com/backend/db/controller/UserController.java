@@ -65,5 +65,4 @@ public class UserController {
     public Integer changePwd(@NotEmpty(message = "The username cannot be empty") @RequestParam("username") String name,@NotEmpty(message = "The password cannot be empty")  @RequestParam("password") String pwd) throws Exception{
         return userService.changePwd(name,pwd);
     }
-
 }

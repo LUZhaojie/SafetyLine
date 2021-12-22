@@ -9,8 +9,5 @@ import org.apache.ibatis.annotations.Select;
 @Mapper
 public interface UserMapper extends BaseMapper<User> {
 
-//    @Select("select * from user")
-//    public User getuser(String id);
-
 
 }

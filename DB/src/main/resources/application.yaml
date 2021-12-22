@@ -4,6 +4,10 @@ spring:
     username: safetyline
     password: 19980223x
     driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://localhost:3306/safetyline
+#    username: root
+#    password: 19980223x
+#    driver-class-name: com.mysql.cj.jdbc.Driver
 
 mybatis:
   #  config-location: classpath:mybatis/mybatis-config.xml
