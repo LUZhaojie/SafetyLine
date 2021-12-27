@@ -64,9 +64,13 @@ public class IssueController {
                t.setHumanTimeEstimate(""+ts.getHumanTimeEstimate());
                t.setUpdated(1);
            }
-            if(issueService.getById(i.getIid()) != null){
-                issueService.DeleteIssue(i.getIid());
-            }
+
+           if(issueService.getById(i.getIid()) != null){
+               Tache t2 = issueService.getById(i.getIid());
+               t.setHumanTimeEstimate(t2.getHumanTimeEstimate());
+               t.setEditor(t2.getEditor());
+               t.setTime(t2.getTime());
+           }
             issueService.saveIssue(t);
 
        }
