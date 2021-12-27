@@ -126,6 +126,18 @@ public class IssueController {
     }
 
     @ResponseBody
+    @GetMapping("/issue/bytimeorder")
+    public List<Tache> bytimeorder(){
+        return issueService.Issues_order();
+    }
+
+    @ResponseBody
+    @GetMapping("/issue/editor")
+    public List<Tache> bytimeorder(@NotEmpty @RequestParam("username") String username){
+        return issueService.Issues_byusername(username);
+    }
+
+    @ResponseBody
     @GetMapping("/issue/issuelist")
     public List<Tache> getIssue(){ return issueService.Issues_non_chiffre(); }
 

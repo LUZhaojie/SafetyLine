@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.validation.annotation.Validated;
-
+import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -28,7 +28,7 @@ public class Tache {
     @TableField(value="updated",fill = FieldFill.DEFAULT)
     private Integer updated;
 
-    private Long time;
+    private String time;
 
     private String editor;
 
@@ -44,11 +44,11 @@ public class Tache {
     }
 
 
-    public Long getTime() {
+    public String getTime() {
         return time;
     }
 
-    public void setTime(Long time) {
+    public void setTime(String time) {
         this.time = time;
     }
 
