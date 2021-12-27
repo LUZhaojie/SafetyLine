@@ -22,6 +22,7 @@ public class IssueServiceImpl extends ServiceImpl<IssueMapper, Tache> implements
     public Boolean DeleteIssue(Integer id){
         return removeById(id);
     }
+
     public List<Tache> Issues_non_chiffre(){
         List<Tache> ls = list();
         List<Tache> res = new ArrayList<>();

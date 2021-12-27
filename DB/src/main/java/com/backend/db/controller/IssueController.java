@@ -77,17 +77,30 @@ public class IssueController {
     @PostMapping("/issue/valide")
     public Boolean valide(@RequestParam("id") Integer id){
         Tache t = issueService.getById(id);
-        if(t.getHumanTimeEstimate() != null && t.getUpdated() == 0){
-            this.gitLabApi = new GitLabApi("https://gitlab.com",accessToken);
-            try {
-                gitLabApi.getIssuesApi().estimateTime(this.projectID,id,t.getHumanTimeEstimate());
-                t.setUpdated(1);
-                issueService.saveIssue(t);
-            }catch (GitLabApiException e){
-                System.out.println("error2");
-                return false;
+        if(t.getHumanTimeEstimate() != null){
+            if (t.getUpdated() == 0){
+                this.gitLabApi = new GitLabApi("https://gitlab.com",accessToken);
+                try {
+                    gitLabApi.getIssuesApi().estimateTime(this.projectID,id,t.getHumanTimeEstimate());
+                    t.setUpdated(1);
+                    issueService.saveIssue(t);
+                }catch (GitLabApiException e){
+                    System.out.println("error2");
+                    return false;
+                }
+                return true;
+            }else{
+                this.gitLabApi = new GitLabApi("https://gitlab.com",accessToken);
+                try {
+                    gitLabApi.getIssuesApi().estimateTime(this.projectID,id,t.getHumanTimeEstimate());
+                    t.setUpdated(0);
+                    issueService.saveIssue(t);
+                }catch (GitLabApiException e){
+                    System.out.println("error2");
+                    return false;
+                }
+                return true;
             }
-            return true;
         }
         System.out.println("error2");
         return false;
@@ -111,6 +124,14 @@ public class IssueController {
     public List<Tache> getAll(){
         return issueService.getAll();
     }
+
+    @ResponseBody
+    @GetMapping("/issue/issuelist")
+    public List<Tache> getIssue(){ return issueService.Issues_non_chiffre(); }
+
+    @ResponseBody
+    @GetMapping("/issue/issueNonValid")
+    public List<Tache> getIssueNonValid(){ return issueService.Issues_non_valide(); }
 
     @ResponseBody
     @GetMapping("/issue")

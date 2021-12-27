@@ -81,4 +81,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements Use
     }
 
 
+    public void changeRole(Long id) throws Exception{
+        User u = Userbyid(id);
+        if (u.getRole()==1) {
+            u.setRole(0);
+        }else{
+            u.setRole(1);
+        }
+        updateById(u);
+    }
 }

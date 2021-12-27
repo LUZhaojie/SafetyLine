@@ -2,6 +2,7 @@ package com.backend.db.controller;
 
 import com.backend.db.bean.User;
 import com.backend.db.service.impl.UserServiceImpl;
+import org.apache.logging.log4j.message.ReusableMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -49,15 +50,26 @@ public class UserController {
     }
 
     @ResponseBody
-    @GetMapping("/user/login")
-    public Boolean login(@NotEmpty(message = "The username cannot be empty") @RequestParam("username") String name, @NotEmpty(message = "The password cannot be empty") @RequestParam("password") String pwd){
-        return userService.login(name,pwd);
+    @PostMapping("/user/login")
+    public User login(@NotEmpty(message = "The username cannot be empty") @RequestParam("username") String name, @NotEmpty(message = "The password cannot be empty") @RequestParam("password") String pwd){
+        if (userService.login(name,pwd)){
+            return UserbyName(name).get(0);
+        }else{
+            return null;
+        }
     }
+
 
     @ResponseBody
     @GetMapping("/user/role")
     public Integer getRole(@NotEmpty(message = "The username cannot be empty") @RequestParam("username") String name) throws Exception{
         return  userService.getRole(name);
+    }
+
+    @ResponseBody
+    @PostMapping("/user/roleChange")
+    public void changeRole(@RequestParam("id") Long id) throws Exception{
+        userService.changeRole(id);
     }
 
     @ResponseBody
