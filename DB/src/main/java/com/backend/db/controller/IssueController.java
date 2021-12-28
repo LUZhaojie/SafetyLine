@@ -35,37 +35,37 @@ public class IssueController {
     @ResponseBody
     @PostMapping("/issue/refresh")
     public Boolean refresh(){
-       this.gitLabApi = new GitLabApi("https://gitlab.com",accessToken);
-       IssueFilter filter = new IssueFilter();
-       List<String> ls = new ArrayList<>();
-       ls.add(this.label);
-       filter.setLabels(ls);
-       List<Issue> issues = new ArrayList<>();
-       try {
-           issues = gitLabApi.getIssuesApi().getIssues(this.projectID, filter);
-       }catch (GitLabApiException e){
-           System.out.println(e.getMessage());
-           return false;
-       }
-       if(issues.isEmpty()){
-           return false;
-       }
+        this.gitLabApi = new GitLabApi("https://gitlab.com",accessToken);
+        IssueFilter filter = new IssueFilter();
+        List<String> ls = new ArrayList<>();
+        ls.add(this.label);
+        filter.setLabels(ls);
+        List<Issue> issues = new ArrayList<>();
+        try {
+            issues = gitLabApi.getIssuesApi().getIssues(this.projectID, filter);
+        }catch (GitLabApiException e){
+            System.out.println(e.getMessage());
+            return false;
+        }
+        if(issues.isEmpty()){
+            return false;
+        }
 
-       for(Issue i: issues){
+        for(Issue i: issues){
             Tache t = new Tache(i.getIid(),i.getTitle());
             t.setDescription(i.getDescription());
             TimeStats ts = i.getTimeStats();
 
-           Assignee a = i.getAssignee();
-           if(a != null) {
-               t.setAssignee(a.getName());
-           }
-           if(ts.getHumanTimeEstimate() != null){
-               t.setHumanTimeEstimate(""+ts.getHumanTimeEstimate());
-               t.setUpdated(1);
-           }
+            Assignee a = i.getAssignee();
+            if(a != null) {
+                t.setAssignee(a.getName());
+            }
+            if(ts.getHumanTimeEstimate() != null){
+                t.setHumanTimeEstimate(""+ts.getHumanTimeEstimate());
+                t.setUpdated(1);
+            }
 
-           if(issueService.getById(i.getIid()) != null){
+            if(issueService.getById(i.getIid()) != null){
                Tache t2 = issueService.getById(i.getIid());
                t.setHumanTimeEstimate(t2.getHumanTimeEstimate());
                t.setEditor(t2.getEditor());
@@ -73,8 +73,8 @@ public class IssueController {
            }
             issueService.saveIssue(t);
 
-       }
-       return true;
+        }
+        return true;
     }
 
     @ResponseBody
@@ -87,17 +87,6 @@ public class IssueController {
                 try {
                     gitLabApi.getIssuesApi().estimateTime(this.projectID,id,t.getHumanTimeEstimate());
                     t.setUpdated(1);
-                    issueService.saveIssue(t);
-                }catch (GitLabApiException e){
-                    System.out.println("error2");
-                    return false;
-                }
-                return true;
-            }else{
-                this.gitLabApi = new GitLabApi("https://gitlab.com",accessToken);
-                try {
-                    gitLabApi.getIssuesApi().estimateTime(this.projectID,id,t.getHumanTimeEstimate());
-                    t.setUpdated(0);
                     issueService.saveIssue(t);
                 }catch (GitLabApiException e){
                     System.out.println("error2");

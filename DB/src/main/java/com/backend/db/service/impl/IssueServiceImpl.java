@@ -72,7 +72,7 @@ public class IssueServiceImpl extends ServiceImpl<IssueMapper, Tache> implements
 
             @Override
             public int compare(Tache o1, Tache o2) {
-                return o1.getTime().compareTo(o2.getTime());
+                return o2.getTime().compareTo(o1.getTime());
             }
         });
 
