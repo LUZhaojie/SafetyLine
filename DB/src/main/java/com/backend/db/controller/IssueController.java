@@ -40,7 +40,7 @@ public class IssueController {
         List<String> ls = new ArrayList<>();
         ls.add(this.label);
         filter.setLabels(ls);
-        List<Issue> issues = new ArrayList<>();
+        List<Issue> issues;
         try {
             issues = gitLabApi.getIssuesApi().getIssues(this.projectID, filter);
         }catch (GitLabApiException e){
@@ -50,9 +50,10 @@ public class IssueController {
         if(issues.isEmpty()){
             return false;
         }
-
+        ArrayList<Integer> idlist = new ArrayList<>();
         for(Issue i: issues){
             Tache t = new Tache(i.getIid(),i.getTitle());
+            idlist.add(i.getIid());
             t.setDescription(i.getDescription());
             TimeStats ts = i.getTimeStats();
 
@@ -74,6 +75,13 @@ public class IssueController {
             issueService.saveIssue(t);
 
         }
+
+        for (Tache tache : issueService.getAll()) {
+            if (!idlist.contains(tache.getId())){
+                issueService.DeleteIssue(tache.getId());
+            }
+        }
+
         return true;
     }
 
@@ -151,6 +159,24 @@ public class IssueController {
         this.gitLabApi = new GitLabApi("https://gitlab.com",accessToken);
         try {
             gitLabApi.getIssuesApi().resetEstimatedTime(this.projectID,id);
+        }catch (Exception e){
+            return false;
+        }
+
+        refresh();
+        return true;
+
+    }
+
+    @ResponseBody
+    @PostMapping("/issue/resetAll")
+    public Boolean reset(){
+        this.gitLabApi = new GitLabApi("https://gitlab.com",accessToken);
+        try {
+            List<Tache> issues = getAll();
+            for (Tache issue:issues) {
+                gitLabApi.getIssuesApi().resetEstimatedTime(this.projectID, issue.getId());
+            }
         }catch (Exception e){
             return false;
         }
